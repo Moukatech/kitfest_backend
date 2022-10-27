@@ -4,10 +4,13 @@ from database.signupQuery import addToNewsletterTable, checkEmail,listAllEmails
 from app.models.FormModels import newsLetterShema
 from app.routes import contactUS,donate
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+
 
 
 metadata.create_all(engine)
 app = FastAPI()
+app.add_middleware(HTTPSRedirectMiddleware)
 app.include_router(contactUS.router)
 app.include_router(donate.router)
 
