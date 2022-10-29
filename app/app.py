@@ -14,7 +14,7 @@ app.include_router(donate.router)
 
 origins = [
     "http://127.0.0.1:5500",
-    "kitfest.co.ke"
+    "https://kitfest.co.ke"
 ]
 
 
