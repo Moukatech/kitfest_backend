@@ -16,6 +16,8 @@ passlib = {version = "==1.7.4", extras = ["bcrypt"]}
 psycopg2-binary = "==2.9.3"
 pydantic = "==1.10.2"
 email-validator = "*"
+fastapi-mail = "*"
+python-dotenv = "0.21.0"
 
 [dev-packages]
 
