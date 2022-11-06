@@ -5,7 +5,7 @@ from ..models.FormModels import *
 from ..utilities.email import send_email_background, send_email_async
 
 router = APIRouter(tags=["ContactUS"], prefix='/contactUs')
-recipient= ["kitfest@kitfest.co.ke","lewismocha@gmail.com"]
+recipient= ["lewismocha@gmail.com"]
 @router.post("/newQuery")
 async def createContact(background_tasks: BackgroundTasks,contactData: NormalQuerySchema= Body(...)):
     await add_normal_query(contactData)

@@ -5,7 +5,7 @@ from ..models.FormModels import *
 from ..utilities.email import send_email_background, send_email_async
 
 router = APIRouter(tags=["Donate"], prefix='/donate')
-recipient= ["trust@kitfest.co.ke"]
+recipient= ["lewismocha@gmail.com"]
 @router.post("/create_donation_query")
 async def createDonation(background_tasks: BackgroundTasks,donationData:DonateQuerySchema=Body(...)):
     await add_donation_query(donationData)

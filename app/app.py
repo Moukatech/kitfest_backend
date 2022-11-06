@@ -3,28 +3,36 @@ from database.db import metadata, database, engine
 from database.signupQuery import addToNewsletterTable, checkEmail,listAllEmails
 from app.models.FormModels import newsLetterShema
 from app.routes import contactUS,donate
-from fastapi.middleware.cors import CORSMiddleware
-
-
-
-metadata.create_all(engine)
-app = FastAPI()
-app.include_router(contactUS.router)
-app.include_router(donate.router)
+from starlette.middleware import Middleware
+from starlette.middleware.cors import CORSMiddleware
 
 origins = [
     "http://127.0.0.1:5500",
-    "https://kitfest.co.ke"
+    "https://kitfest.co.ke",
 ]
 
+middleware = [
+    Middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=['*'],
+        allow_headers=['*']
+    )
+]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
+metadata.create_all(engine)
+app = FastAPI(middleware=middleware)
+app.include_router(contactUS.router)
+app.include_router(donate.router)
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"]
+# )
 
 @app.on_event("startup")
 async def db_connect():
