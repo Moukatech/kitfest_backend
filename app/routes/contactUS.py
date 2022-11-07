@@ -5,11 +5,11 @@ from ..models.FormModels import *
 from ..utilities.email import send_email_background, send_email_async
 
 router = APIRouter(tags=["ContactUS"], prefix='/contactUs')
-recipient= ["kitfest@kitfest.com"]
+recipient= ["kitfest@kitfest.co.ke"]
 @router.post("/newQuery")
 async def createContact(contactData: NormalQuerySchema= Body(...)):
     await add_normal_query(contactData)
     ##add send email notification
-    send_email_async(contactData, "Normal Query",recipient)
+    await send_email_async(contactData, "Normal Query",recipient)
     return {"Message": "Created a normal query Suceessfully"}
 
