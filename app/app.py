@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Body
+from fastapi import FastAPI,Body,Response, Request
 from database.db import metadata, database, engine
 from database.signupQuery import addToNewsletterTable, checkEmail,listAllEmails
 from app.models.FormModels import newsLetterShema
@@ -9,31 +9,37 @@ from starlette.middleware.cors import CORSMiddleware
 origins = [
     "http://127.0.0.1:5500",
     "https://kitfest.co.ke",
-    "https://kitfest.co.ke/"
+    "https://kitfest.co.ke/",
 ]
 
-middleware = [
-    Middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=['*'],
-        allow_headers=['*']
-    )
-]
+# middleware = [
+#     Middleware(
+#         CORSMiddleware,
+#         allow_origins=origins,
+#         allow_credentials=True,
+#         allow_methods=['*'],
+#         allow_headers=['*']
+#     )
+# ]
 
 metadata.create_all(engine)
-app = FastAPI(middleware=middleware)
+app = FastAPI()
 app.include_router(contactUS.router)
 app.include_router(donate.router)
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"]
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
+@app.middleware("http")
+async def allowAllDomains(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
 
 @app.on_event("startup")
 async def db_connect():
