@@ -35,11 +35,11 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-@app.middleware("http")
-async def allowAllDomains(request: Request, call_next):
-    response = await call_next(request)
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    return response
+# @app.middleware("http")
+# async def allowAllDomains(request: Request, call_next):
+#     response = await call_next(request)
+#     response.headers["Access-Control-Allow-Origin"] = "*"
+#     return response
 
 @app.on_event("startup")
 async def db_connect():
