@@ -18,5 +18,24 @@ class NormalQuerySchema(BaseModel):
     email : EmailStr = Field(...)
     queryType:str= Field(...)
     message: str = Field(...)
+
+class UserLoginSchema(BaseModel):
+    email : EmailStr =Field(...)
+    password : str = Field(...)
+
+class UserEmailschema(BaseModel):
+    email : EmailStr =Field(...)
     
-    
+class UserSchema(BaseModel):
+    fullname: str = Field(...)
+    email : EmailStr =Field(...)
+    password : str = Field(...)
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    email: str = None

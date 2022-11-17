@@ -45,6 +45,14 @@ donatations = Table(
     Column("Message", String(500)),
     Column("Query_date", DateTime, default=func.now(), nullable=False),
 )
-
+users = Table(
+    "users",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("fullname", String(50)),
+    Column("email", String(50)),
+    Column("password", String(250)),
+    Column("created_date", DateTime, default=func.now(), nullable=False),
+)
 
 database = Database(database_url)
