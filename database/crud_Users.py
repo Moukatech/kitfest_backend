@@ -7,8 +7,9 @@ from fastapi import Depends, FastAPI, HTTPException
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
 from jwt import PyJWTError
 from starlette.status import HTTP_403_FORBIDDEN
+from fastapi.security import OAuth2PasswordBearer
 
-oauth2_scheme = newAuth.OAuth2PasswordBearerCookie(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/user/token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # used to hash passwords
 
 async def create_user(payload):
@@ -23,7 +24,7 @@ async def check_user(user):
     
     return {"data":selected_user}
 
-async def authenticate_user(email,password):
+async def authenticate_admin(email,password):
     # return await check_user(user_data)
     user= await check_user(email)
     verify_password=pwd_context.verify(password, user.password)
@@ -31,6 +32,13 @@ async def authenticate_user(email,password):
         return user
     return False   
 
+async def authenticate_user(Payload):
+    user= await check_user(Payload)
+    verify_password=pwd_context.verify(Payload.password, user.password)
+    if user.email == Payload.email and  verify_password==True:
+        return user
+    return False  
+    
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=HTTP_403_FORBIDDEN, detail="Could not validate credentials"

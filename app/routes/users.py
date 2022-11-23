@@ -18,7 +18,8 @@ from starlette.requests import Request
 router = APIRouter(tags=["Users"], prefix="/user")
 basic_auth = newAuth.BasicAuth(auto_error=False)
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-@router.post("/add_user",dependencies=[Depends(auth_bearer.JWTBearer())])
+
+@router.post("/add_user",dependencies=[Depends(get_current_active_user)])
 async def add_new_user(userData: FormModels.UserSchema):
     add= await create_user(userData)
     return {"Message": "User added successfully"}
@@ -35,7 +36,7 @@ async def user_login(user:FormModels.UserLoginSchema):
 
 @router.post("/token", response_model=FormModels.Token)
 async def route_login_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(form_data.username, form_data.password)
+    user = authenticate_admin(form_data.username, form_data.password)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -53,35 +54,37 @@ async def route_logout_and_remove_cookie():
 
 
 @router.get("/login_basic")
-async def login_basic(auth: newAuth.BasicAuth = Depends(basic_auth)):
+async def login_basic(auth: newAuth.BasicAuth = Depends()):
     if not auth:
         response = Response(headers={"WWW-Authenticate": "Basic"}, status_code=401)
         return response
 
     try:
-        decoded = base64.b64decode(auth).decode("ascii")
-        username, _, password = decoded.partition(":")
-        user = await authenticate_user(username, password)
+        # decoded = base64.b64decode(auth).decode("ascii")
+        # username, _, password = decoded.partition(":")
+        user = await authenticate_admin(auth.username, auth.password)
+        print()
         if not user:
             raise HTTPException(status_code=400, detail="Incorrect email or password")
 
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = newAuth.create_access_token(
-            data={"sub": username}, expires_delta=access_token_expires
+            data={"sub": auth.username}, expires_delta=access_token_expires
         )
 
         token = jsonable_encoder(access_token)
 
         response = RedirectResponse(url="/docs")
-        response.set_cookie(
-            "Authorization",
-            value=f"Bearer {token}",
-            domain="127.0.0.1",
-            httponly=True,
-            max_age=1800,
-            expires=1800,
-        )
-        return response
+        # response.set_cookie(
+        #     "Authorization",
+        #     value=f"Bearer {token}",
+        #     domain="127.0.0.1",
+        #     httponly=True,
+        #     max_age=1800,
+        #     expires=1800,
+        # )
+        # return response
+        return {"access_token": access_token, "token_type": "bearer"}
 
     except:
         response = Response(headers={"WWW-Authenticate": "Basic"}, status_code=401)

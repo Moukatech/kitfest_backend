@@ -57,7 +57,7 @@ app.add_middleware(
 
 
 async def docs_access(credentials:  HTTPBasicCredentials = Depends(security)):
-    user = crud_Users.authenticate_user(credentials.username, credentials.password)
+    user = crud_Users.authenticate_admin(credentials.username, credentials.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
