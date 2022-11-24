@@ -19,8 +19,8 @@ def verifyPassword(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 async def create_user(payload):
-    hashPassword(payload.password)
-    query =  users.insert().values(fullname = payload.fullname, email= payload.email, password = hashPassword)
+    hashed_Password=hashPassword(payload.password)
+    query =  users.insert().values(fullname = payload.fullname, email= payload.email, password = hashed_Password)
     return await database.execute(query=query)
 
 async def check_user(user):
