@@ -38,4 +38,7 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    email: str = None
+    username: str = None
+
+class UserInDB(UserSchema):
+    password: str

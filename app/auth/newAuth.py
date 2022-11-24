@@ -1,30 +1,26 @@
 from typing import Optional
 import base64
-from passlib.context import CryptContext
 from datetime import datetime, timedelta
 import time
 
 import jwt
 from jwt import PyJWTError
 
-from pydantic import BaseModel
 from fastapi.openapi.models import SecurityBase as SecurityBaseModel
-from fastapi import Depends, FastAPI, HTTPException
-from fastapi.encoders import jsonable_encoder
+from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2
 from fastapi.security.base import SecurityBase
 from fastapi.security.utils import get_authorization_scheme_param
-from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
-from fastapi.openapi.utils import get_openapi
 
 from starlette.status import HTTP_403_FORBIDDEN
-from starlette.responses import RedirectResponse, Response, JSONResponse
 from starlette.requests import Request
 from decouple import config 
 
-SECRET_KEY = config('JWT_SECRET')
-ALGORITHM = config('JWT_ALGORITHM')
+# SECRET_KEY = config('JWT_SECRET')
+# ALGORITHM = config('JWT_ALGORITHM')
+SECRET="d36dd95da0cc5bc52fd01513a1dbb4775610cedd9a68ffab815c44f1d0bebede"
+ALGORITHM="HS256"
 
 class OAuth2PasswordBearerCookie(OAuth2):
     def __init__(
@@ -90,7 +86,7 @@ class BasicAuth(SecurityBase):
             else:
                 return None
         return param
-def create_access_token(*, data: dict, expires_delta: timedelta = None):
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
     
     to_encode = data.copy()
     if expires_delta:
@@ -98,12 +94,12 @@ def create_access_token(*, data: dict, expires_delta: timedelta = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, SECRET, algorithm=ALGORITHM)
     return encoded_jwt
 
-def decodeJWT(token: str) -> dict:
+def decodeJWT(token):
     try:
-        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return decoded_token if decoded_token["expires"] >= time.time() else None
+        payload = jwt.decode(token, SECRET, algorithms=[ALGORITHM])
+        return payload if payload["exp"] >= time.time() else None
     except:
         return {}

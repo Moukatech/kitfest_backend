@@ -19,7 +19,7 @@ router = APIRouter(tags=["Users"], prefix="/user")
 basic_auth = newAuth.BasicAuth(auto_error=False)
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-@router.post("/add_user",dependencies=[Depends(get_current_active_user)])
+@router.post("/add_user",dependencies=[Depends(get_current_user)])
 async def add_new_user(userData: FormModels.UserSchema):
     add= await create_user(userData)
     return {"Message": "User added successfully"}
@@ -36,12 +36,12 @@ async def user_login(user:FormModels.UserLoginSchema):
 
 @router.post("/token", response_model=FormModels.Token)
 async def route_login_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_admin(form_data.username, form_data.password)
+    user = await authenticate_admin(form_data.username, form_data.password)
     if not user:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
+        raise HTTPException(status_code=401, detail="Incorrect username or password")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = newAuth.create_access_token(
-        data={"sub": form_data.username}, expires_delta=access_token_expires
+        data={"sub": user.email}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 

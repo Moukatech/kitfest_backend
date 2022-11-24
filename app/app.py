@@ -57,8 +57,12 @@ app.add_middleware(
 
 
 async def docs_access(credentials:  HTTPBasicCredentials = Depends(security)):
-    user = crud_Users.authenticate_admin(credentials.username, credentials.password)
-    if not user:
+    # user = crud_Users.authenticate_admin(credentials.username, credentials.password)
+    user= await crud_Users.check_admin(credentials.username)
+    correct_username = secrets.compare_digest(credentials.username, user.email)
+    # correct_password = secrets.compare_digest(crud_Users.hashPassword(
+    correct_password=crud_Users.verifyPassword (credentials.password, user.password)
+    if not (correct_username and correct_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
