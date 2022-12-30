@@ -3,7 +3,7 @@ from database.db import metadata, database, engine
 from database.signupQuery import addToNewsletterTable, checkEmail,listAllEmails
 from database import crud_Users
 from app.models import FormModels
-from app.routes import contactUS,donate,users
+from app.routes import contactUS,donate,users,new_application
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.openapi.docs import get_swagger_ui_html,get_redoc_html
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
@@ -18,6 +18,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 origins = [
     "http://127.0.0.1:5500",
+    "http://127.0.0.1:5501",
     "https://kitfest.co.ke",
     "https://kitfest.co.ke/",
 ]
@@ -45,7 +46,7 @@ app = FastAPI(
 app.include_router(contactUS.router)
 app.include_router(donate.router)
 app.include_router(users.router)
-
+app.include_router(new_application.router)
 security = HTTPBasic()
 app.add_middleware(
     CORSMiddleware,
