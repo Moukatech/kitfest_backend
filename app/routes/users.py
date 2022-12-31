@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Body, Depends
+from fastapi import APIRouter, HTTPException, Body, Depends,status
 from database.crud_Users import *
 from ..models import FormModels
 from ..auth import auth_hundler, auth_bearer, newAuth
@@ -24,15 +24,30 @@ async def add_new_user(userData: FormModels.UserSchema):
     add= await create_user(userData)
     return {"Message": "User added successfully"}
 
+
+@router.post("/register")
+async def add_new_user(userData: FormModels.RegistrationSchema):
+    user_status=await check_user(userData)
+    if user_status:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,detail="User already exists")
+    await create_user(userData)
+    await addUserInfo(userData)
+    return {"Message": "User added successfully"}
+
 @router.post("/login")
 async def user_login(user:FormModels.UserLoginSchema):
     # userData = await check_login(user)
     # return  userData
-    if await authenticate_user(user):
-        return auth_hundler.signJWT(user.email)
-    return{
-        "Error": "Wrong login credentials"
-    }
+    user_data = await authenticate_user(user)
+    if not user_data:
+        # return{"message": "Invalid username or password"}
+        response = Response(headers={"WWW-Authenticate": "Basic"}, status_code=401)
+        return response
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = newAuth.create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires)
+    return {"access_token": access_token, "token_type": "bearer", "expires":access_token_expires}
+    # return auth_hundler.signJWT(user.email)
 
 @router.post("/token", response_model=FormModels.Token)
 async def route_login_access_token(form_data: OAuth2PasswordRequestForm = Depends()):

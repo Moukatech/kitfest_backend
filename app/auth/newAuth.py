@@ -102,4 +102,4 @@ def decodeJWT(token):
         payload = jwt.decode(token, SECRET, algorithms=[ALGORITHM])
         return payload if payload["exp"] >= time.time() else None
     except:
-        return {}
+        return {"error": "token decode failed"}

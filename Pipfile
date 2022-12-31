@@ -20,6 +20,8 @@ fastapi-mail = "*"
 python-dotenv = "0.21.0"
 python-multipart = "*"
 python-jose = {extras = ["cryptography"], version = "*"}
+requests = "*"
+pytz = "*"
 
 [dev-packages]
 
