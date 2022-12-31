@@ -71,7 +71,7 @@ async def user_application_data(user:str =Depends(get_current_user)):
 
 @router.post("/send_email")
 async def send_email(technical_rider_files:UploadFile= File(...),trainerProfile:UploadFile= File(...),user:str =Depends(get_current_user)):
-    recipient= ["lewismocha@gmail.com"]
+    recipient= ["lewismocha@gmail.com","kitfest@kitfest.co.ke"]
     application_data= await get_user_application_data(user)
     technicalData= await select_technical_files(user)
     knowledgeData= await select_knowledge_files(user)
