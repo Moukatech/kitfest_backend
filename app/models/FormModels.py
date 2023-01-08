@@ -78,7 +78,7 @@ class PerformaceDetails(BaseModel):
     take_Down_time:int= Field(...)
     stage_space: str = Field(...)
     numberOfperfomers :int = Field(...)
-    intermissionDuration: int = Field(...)
+    intermissionDuration: int | None = Field(...)
 
 class FileUpload(BaseModel):
     file: UploadFile = File(...)
@@ -88,7 +88,7 @@ class PerformanceLinks(BaseModel):
     performance_Videos : str = Field(...)
 
 class NotesScheme(BaseModel):
-    notes :str = Field(...)
+    notes :str | None = Field(...)
     terms : str = Field(...)
     
 
