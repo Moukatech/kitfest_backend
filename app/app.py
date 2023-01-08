@@ -21,6 +21,7 @@ origins = [
     "http://127.0.0.1:5501",
     "https://kitfest.co.ke",
     "https://kitfest.co.ke/",
+    "https://test.kitfest.co.ke",
 ]
 
 # middleware = [
@@ -53,7 +54,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["Origin", "Content-Type", "Accept"]
+    allow_headers=["Origin", "Content-Type", "Accept","Authorization"]
 )
 
 
