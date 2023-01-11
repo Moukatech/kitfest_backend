@@ -24,13 +24,13 @@ conf = ConnectionConfig(
 async def send_application_email(user_data,technical_rider_files,trainerProfile,recipient):
     html = f"""
     <html>
-        <body style="margin-left: auto;
-                    margin-right: auto;
-                    margin-top: 22px;
-                    margin-bottom: 22px;
+        <body style="margin-left: 52px;
+                    margin-right: 52px;
+                    margin-top: 52px;
+                    margin-bottom: 52px;
                     padding: 0;
                     box-sizing: inherit;
-                    font-family: "Montserrat", sans-serif;
+                    font-family: Montserrat, sans-serif;
                     background-color: white;
                     display: flex;
                     align-items: center;
@@ -236,7 +236,7 @@ async def send_application_email(user_data,technical_rider_files,trainerProfile,
                 <br><br>
         </body>
 
-        </html> techRider.pdf
+        </html>
     """
     # with open(f"{filename}", 'rb') as f:
     #     data = f.file
